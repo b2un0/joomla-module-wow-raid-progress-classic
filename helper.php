@@ -9,10 +9,10 @@
 
 defined('_JEXEC') or die();
 
-final class mod_wow_raid_progress_classic
+final class ModWowRaidProgressClassicHelper
 {
-
     private $params = null;
+
     private $raids = array(
         // 
         0 => array(
@@ -29,12 +29,55 @@ final class mod_wow_raid_progress_classic
         )
     );
 
-    public function __construct(JRegistry &$params)
+    private function __construct(JRegistry &$params)
     {
+        if (version_compare(JVERSION, 3, '>=')) {
+            $params->set('guild', rawurlencode(JString::strtolower($params->get('guild'))));
+            $params->set('realm', rawurlencode(JString::strtolower($params->get('realm'))));
+        } else {
+            $params->set('realm', str_replace(array('%20', ' '), '-', $params->get('realm')));
+            $params->set('guild', str_replace(array('%20', ' '), '%2520', $params->get('guild')));
+        }
+
+        $params->set('region', JString::strtolower($params->get('region')));
+        $params->set('lang', JString::strtolower($params->get('lang', 'en')));
+        $params->set('link', $params->get('link', 'battle.net'));
+
         $this->params = $params;
     }
 
-    public function getRaids()
+    public static function getAjax()
+    {
+        $module = JModuleHelper::getModule('mod_' . JFactory::getApplication()->input->get('module'));
+
+        if (empty($module)) {
+            return false;
+        }
+
+        JFactory::getLanguage()->load($module->module);
+
+        $params = new JRegistry($module->params);
+        $params->set('ajax', 0);
+
+        ob_start();
+
+        require(dirname(__FILE__) . '/' . $module->module . '.php');
+
+        return ob_get_clean();
+    }
+
+    public static function getData(JRegistry &$params)
+    {
+        if ($params->get('ajax')) {
+            return;
+        }
+
+        $instance = new self($params);
+
+        return $instance->getRaids();
+    }
+
+    private function getRaids()
     {
         if ($this->params->get('mode') == 'auto') {
             $url = 'http://' . $this->params->get('region') . '.battle.net/api/wow/guild/' . $this->params->get('realm') . '/' . $this->params->get('guild') . '?fields=members,achievements';
@@ -109,7 +152,7 @@ final class mod_wow_raid_progress_classic
 
         if (!$result = $cache->get($key)) {
             try {
-                $http = new JHttp(new JRegistry, new JHttpTransportCurl(new JRegistry));
+                $http = JHttpFactory::getHttp();
                 $http->setOption('userAgent', 'Joomla! ' . JVERSION . '; WoW Raid Progress - WotLK; php/' . phpversion());
 
                 $result = $http->get($url, null, $this->params->get('timeout', 10));
