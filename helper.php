@@ -14,7 +14,7 @@ final class ModWowRaidProgressClassicHelper
     private $params = null;
 
     private $raids = array(
-        // 
+        //
         0 => array(
             'link' => '',
             'stats' => array('kills' => 0, 'mode' => 'normal'),
@@ -61,7 +61,7 @@ final class ModWowRaidProgressClassicHelper
 
         ob_start();
 
-        require(dirname(__FILE__) . '/' . $module->module . '.php');
+        require(__DIR__ . '/' . $module->module . '.php');
 
         return ob_get_clean();
     }
