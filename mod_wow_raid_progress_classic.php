@@ -9,7 +9,7 @@
 
 defined('_JEXEC') or die;
 
-JLoader::register('ModWowRaidProgressClassicHelper', dirname(__FILE__) . '/helper.php');
+JLoader::register('ModWowRaidProgressClassicHelper', __DIR__ . '/helper.php');
 
 $raids = ModWowRaidProgressClassicHelper::getData($params);
 
