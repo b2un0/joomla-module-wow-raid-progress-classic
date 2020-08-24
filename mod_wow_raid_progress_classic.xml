@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="module" version="2.5" client="site" method="upgrade">
+<extension type="module" version="3.0" client="site" method="upgrade">
     <name>MOD_WOW_RAID_PROGRESS_CLASSIC</name>
     <author>Branko Wilhelm</author>
     <creationDate>Dez 2013</creationDate>
@@ -15,7 +15,6 @@
         <folder>fields</folder>
         <folder>tmpl</folder>
     </files>
-    <scriptfile>script.installer.php</scriptfile>
     <languages folder="language">
         <language tag="en-GB">en-GB/en-GB.mod_wow_raid_progress_classic.ini</language>
         <language tag="en-GB">en-GB/en-GB.mod_wow_raid_progress_classic.sys.ini</language>
